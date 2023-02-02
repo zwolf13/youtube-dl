@@ -245,8 +245,12 @@ class AfreecaTVIE(InfoExtractor):
                 }, data=raw_data)
 
             if video_json.get('result') == -1:
-                raise ExtractorError(
-                    'The VOD does not exist.', expected=True)
+                if video_json.get('data', {}).get('message') == 'Private':
+                    raise ExtractorError(
+                        'Private video.', expected=True)
+                else:
+                    raise ExtractorError(
+                        'The VOD does not exist.', expected=True)
             video_data = video_json.get('data', {})
             flag = video_data.get('flag')
             if flag and flag == 'SUCCEED':
